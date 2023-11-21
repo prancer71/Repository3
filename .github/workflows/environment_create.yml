@@ -5,6 +5,7 @@ permissions:
   contents: read
 
 on:
+  workflow_dispatch:
   create:
   pull_request:
     types: [opened, reopened]
@@ -13,12 +14,12 @@ concurrency: ${{ github.event.number || github.ref_name }}
 
 jobs:
   config:
-    if: github.event_name == 'pull_request' || github.event.ref_type == 'branch'
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request' || github.event.ref_type == 'branch'
     name: Get Configuration
     uses: ./.github/workflows/environment_config.yml
 
   create_env:
-    if: github.event_name == 'pull_request' || github.event.ref_type == 'branch'
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request' || github.event.ref_type == 'branch'
     name: Create ${{ needs.config.outputs.type }} Environment
     runs-on: ubuntu-latest
 
